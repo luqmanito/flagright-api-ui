@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { TransactionModel } from "@/app/Models/VerifyTransactionModel";
 import transactionNetwork from "@/app/Network/lib/transaction";
 import { useLoading } from "@/Context/loading";
 import { useResponse } from "@/Context/Response";
@@ -7,11 +6,12 @@ import { useResponse } from "@/Context/Response";
 const useTransactionData = () => {
   const { setResponseText } = useResponse();
   const { startLoading, stopLoading } = useLoading();
-  const [transactionData, setTransactionData] = useState<TransactionModel>({
+  const [transactionData, setTransactionData] = useState({
     transactionId: "7b80a539eea6e78acbd6d458e5971482",
     type: "DEPOSIT",
     originUserId: "8650a2611d0771cba03310f74bf6",
     destinationUserId: "9350a2611e0771cba03310f74bf6",
+    transactionState: "",
     originAmountDetails: {
       country: "DE",
       transactionAmount: 800,
@@ -25,18 +25,446 @@ const useTransactionData = () => {
     promotionCodeUsed: true,
     timestamp: 1641654664000,
     originPaymentDetails: {
-      method: "CARD",
-      cardFingerprint: "20ac00fed8ef913aefb17cfae1097cce",
-      cardIssuedCountry: "US",
-      transactionReferenceField: "Deposit",
-      _3dsDone: true,
+      CARD: {
+        method: "CARD",
+        cardFingerprint: "",
+        cardIssuedCountry: "",
+        transactionReferenceField: "",
+        _3dsDone: true,
+        nameOnCard: {
+          firstName: "baran",
+          middleName: "",
+          lastName: "",
+        },
+        CardExpiry: {
+          month: 0,
+          year: 0,
+        },
+        cardLast4Digits: "",
+        cardBrand: "",
+        cardFunding: "",
+        cardAuthenticated: "",
+        paymentChannel: "",
+        cardType: "",
+        merchantDetails: {
+          id: "",
+          category: "",
+          MCC: "",
+          city: "",
+          country: "",
+          state: "",
+          postCode: "",
+        },
+        tags: [
+          {
+            key: "customKey",
+            value: "customValue",
+          },
+        ],
+      },
+      GENERIC_BANK_ACCOUNT: {
+        method: "GENERIC_BANK_ACCOUNT",
+        accountNumber: "",
+        accountType: "",
+        bankName: "",
+        bankCode: "",
+        name: "",
+        bankAddress: {
+          addressLines: "",
+          postcode: "",
+          city: "",
+          state: "",
+          country: "",
+          tags: [
+            {
+              key: "",
+              value: "",
+            },
+          ],
+        },
+        specialInstructions: "",
+        paymentChannel: "",
+        tags: [
+          {
+            key: "",
+            value: "",
+          },
+        ],
+      },
+      IBAN: {
+        method: "IBAN",
+        BIC: "",
+        bankName: "",
+        bankAddress: {
+          addressLines: "",
+          postcode: "",
+          city: "",
+          state: "",
+          country: "",
+          tags: [
+            {
+              key: "",
+              value: "",
+            },
+          ],
+        },
+        country: "",
+        IBAN: "",
+        name: "",
+        bankBranchCode: "",
+        paymentChannel: "",
+        tags: [
+          {
+            key: "",
+            value: "",
+          },
+        ],
+      },
+      ACH: {
+        method: "ACH",
+        routingNumber: "",
+        AccountNumber: "",
+        bankName: "",
+        bankAddress: {
+          addressLines: "",
+          postcode: "",
+          city: "",
+          state: "",
+          country: "",
+          tags: [
+            {
+              key: "",
+              value: "",
+            },
+          ],
+        },
+        beneficiaryName: "",
+        tags: [
+          {
+            key: "",
+            value: "",
+          },
+        ],
+      },
+      SWIFT: {
+        method: "SWIFT",
+        swiftCode: "",
+        AccountNumber: "",
+        AccountType: "",
+        bankName: "",
+        name: "",
+        bankAddress: {
+          addressLines: "",
+          postcode: "",
+          city: "",
+          state: "",
+          country: "",
+          tags: [
+            {
+              key: "",
+              value: "",
+            },
+          ],
+        },
+        specialInstructions: "",
+        tags: [
+          {
+            key: "",
+            value: "",
+          },
+        ],
+      },
+      MPESA: {
+        method: "MPESA",
+        businessShortCode: "",
+        transactionType: "",
+        phoneNumber: "",
+        tags: [
+          {
+            key: "",
+            value: "",
+          },
+        ],
+      },
+      UPI: {
+        method: "UPI",
+        upiID: "",
+        bankProvider: "",
+        interfaceProvider: "",
+        name: "",
+        tags: [
+          {
+            key: "",
+            value: "",
+          },
+        ],
+      },
+      WALLET: {
+        method: "WALLET",
+        walletType: "",
+        walletID: "",
+        paymentChannel: "",
+        name: "",
+        walletPhoneNumber: "",
+        walletBalance: {
+          amountValue: "",
+          amountCurrency: "",
+        },
+        tags: [
+          {
+            key: "",
+            value: "",
+          },
+        ],
+      },
+      CHECK: {
+        method: "CHECK",
+        checkNumber: "",
+        checkIdentifier: "",
+        deliveryStatus: "",
+        etaTimestamp: "",
+        name: "",
+        shippingAddress: {
+          addressLines: "",
+          postcode: "",
+          city: "",
+          state: "",
+          country: "",
+          tags: [
+            {
+              key: "",
+              value: "",
+            },
+          ],
+        },
+        tags: [
+          {
+            key: "",
+            value: "",
+          },
+        ],
+      },
     },
     destinationPaymentDetails: {
-      method: "CARD",
-      cardFingerprint: "20ac00fed8ef913aefb17cfae1097cce",
-      cardIssuedCountry: "IN",
-      transactionReferenceField: "Deposit",
-      _3dsDone: true,
+      CARD: {
+        method: "CARD",
+        cardFingerprint: "20ac00fed8ef913aefb17cfae1097cce",
+        cardIssuedCountry: "US",
+        transactionReferenceField: "Deposit",
+        _3dsDone: true,
+        nameOnCard: {
+          firstName: "baran",
+          middleName: "",
+          lastName: "",
+        },
+        CardExpiry: {
+          month: 0,
+          year: 0,
+        },
+        cardLast4Digits: "",
+        cardBrand: "",
+        cardFunding: "",
+        cardAuthenticated: "",
+        paymentChannel: "",
+        cardType: "",
+        merchantDetails: {
+          id: "",
+          category: "",
+          MCC: "",
+          city: "",
+          country: "",
+          state: "",
+          postCode: "",
+        },
+        tags: [
+          {
+            key: "",
+            value: "",
+          },
+        ],
+      },
+      GENERIC_BANK_ACCOUNT: {
+        method: "GENERIC_BANK_ACCOUNT",
+        accountNumber: "",
+        accountType: "",
+        bankName: "",
+        bankCode: "",
+        name: "",
+        bankAddress: {
+          addressLines: "",
+          postcode: "",
+          city: "",
+          state: "",
+          country: "",
+          tags: [
+            {
+              key: "",
+              value: "",
+            },
+          ],
+        },
+        specialInstructions: "",
+        paymentChannel: "",
+        tags: [
+          {
+            key: "",
+            value: "",
+          },
+        ],
+      },
+      IBAN: {
+        method: "IBAN",
+        BIC: "",
+        bankName: "",
+        bankAddress: {
+          addressLines: "",
+          postcode: "",
+          city: "",
+          state: "",
+          country: "",
+          tags: [
+            {
+              key: "",
+              value: "",
+            },
+          ],
+        },
+        country: "",
+        IBAN: "",
+        name: "",
+        bankBranchCode: "",
+        paymentChannel: "",
+        tags: [
+          {
+            key: "",
+            value: "",
+          },
+        ],
+      },
+      ACH: {
+        method: "ACH",
+        routingNumber: "",
+        AccountNumber: "",
+        bankName: "",
+        bankAddress: {
+          addressLines: "",
+          postcode: "",
+          city: "",
+          state: "",
+          country: "",
+          tags: [
+            {
+              key: "",
+              value: "",
+            },
+          ],
+        },
+        beneficiaryName: "",
+        tags: [
+          {
+            key: "",
+            value: "",
+          },
+        ],
+      },
+      SWIFT: {
+        method: "SWIFT",
+        swiftCode: "",
+        AccountNumber: "",
+        AccountType: "",
+        bankName: "",
+        name: "",
+        bankAddress: {
+          addressLines: "",
+          postcode: "",
+          city: "",
+          state: "",
+          country: "",
+          tags: [
+            {
+              key: "",
+              value: "",
+            },
+          ],
+        },
+        specialInstructions: "",
+        tags: [
+          {
+            key: "",
+            value: "",
+          },
+        ],
+      },
+      MPESA: {
+        method: "MPESA",
+        businessShortCode: "",
+        transactionType: "",
+        phoneNumber: "",
+        tags: [
+          {
+            key: "",
+            value: "",
+          },
+        ],
+      },
+      UPI: {
+        method: "UPI",
+        upiID: "",
+        bankProvider: "",
+        interfaceProvider: "",
+        name: "",
+        tags: [
+          {
+            key: "",
+            value: "",
+          },
+        ],
+      },
+      WALLET: {
+        method: "WALLET",
+        walletType: "",
+        walletID: "",
+        paymentChannel: "",
+        name: "",
+        walletPhoneNumber: "",
+        walletBalance: {
+          amountValue: "",
+          amountCurrency: "",
+        },
+        tags: [
+          {
+            key: "",
+            value: "",
+          },
+        ],
+      },
+      CHECK: {
+        method: "CHECK",
+        checkNumber: "",
+        checkIdentifier: "",
+        deliveryStatus: "",
+        etaTimestamp: "",
+        name: "",
+        shippingAddress: {
+          addressLines: "",
+          postcode: "",
+          city: "",
+          state: "",
+          country: "",
+          tags: [
+            {
+              key: "",
+              value: "",
+            },
+          ],
+        },
+        tags: [
+          {
+            key: "",
+            value: "",
+          },
+        ],
+      },
     },
     reference: "loan repayment",
     originDeviceData: {
@@ -52,6 +480,8 @@ const useTransactionData = () => {
       deviceYear: "2018",
       appVersion: "1.1.0",
     },
+    // relatedTransactionIds: "",
+    productType: "",
     destinationDeviceData: {
       batteryLevel: 95,
       deviceLatitude: 13.0033,
@@ -73,10 +503,10 @@ const useTransactionData = () => {
     ],
   });
 
-  const confirmOrder = async () => {
+  const confirmOrder = async (data: any) => {
     startLoading();
     try {
-      const response = await transactionNetwork.create(transactionData);
+      const response = await transactionNetwork.create(data);
       const formattedResponse = JSON.stringify(response.data, null, 2);
       setResponseText(formattedResponse);
       return response;

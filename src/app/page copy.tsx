@@ -146,44 +146,9 @@ export default function Page() {
     return renderInputs(data);
   };
   const changeActionButton = () => {
-    let func: (payload: any) => Promise<any> = confirmOrder;
-    let payload: any;
+    let func = confirmOrder;
     switch (title) {
       case "Verify a Transaction":
-        const selectedMethod = (transactionData.originPaymentDetails as any)
-          .method;
-        const selectedMethodData = (
-          transactionData.originPaymentDetails as any
-        )[selectedMethod];
-
-        const cleanedMethodData = Object.fromEntries(
-          Object.entries(selectedMethodData).filter(([_, value]) => value !== "")
-        );
-
-        const selectedMethodDestination = (transactionData.destinationPaymentDetails as any)
-          .method;
-        const selectedMethodDataDestination = (
-          transactionData.destinationPaymentDetails as any
-        )[selectedMethod];
-
-        const cleanedMethodDestination = Object.fromEntries(
-          Object.entries(selectedMethodDataDestination).filter(([_, value]) => value !== "")
-        );
-        payload = {
-          ...transactionData,
-          originPaymentDetails: {
-            method: selectedMethod,
-            ...cleanedMethodData,
-          },
-          destinationPaymentDetails: {
-            method: selectedMethodDestination,
-            ...cleanedMethodDestination,
-          },
-        };
-        payload = Object.fromEntries(
-          Object.entries(payload).filter(([_, value]) => value !== "")
-        );
-  
         func = confirmOrder;
         break;
       case "Retrieve a Transaction":
@@ -212,7 +177,7 @@ export default function Page() {
         break;
     }
 
-    return func(payload);
+    return func();
   };
 
   const setterFunction = titleToSetterMap[title];
@@ -228,25 +193,23 @@ export default function Page() {
     data: any,
     parentKey?: string
   ) => {
-    if (data === undefined || data === null) {
-      return [];
-    }
     return Object.keys(data)
       .map((key, index) => {
         const currentKey = parentKey ? `${parentKey}.${key}` : key;
         const value = data[key];
         const isRequired = setterRequired[currentKey];
 
-        if (currentKey === "originPaymentDetails") {
-          const selectedMethod = (data.originPaymentDetails as any).method;
-          const selectedMethodData = (data.originPaymentDetails as any)[
-            selectedMethod
-          ];
+        if (typeof value === "object" && value !== null) {
+          return renderInputs(value, currentKey);
+        }
+
+        if (currentKey === "originPaymentDetails.CARD.method") {
+          // Render dropdown for payment method
           return (
             <FormControl key={currentKey} mt={4} isRequired={isRequired}>
               <FormLabel>{currentKey}</FormLabel>
               <Select
-                value={selectedMethod}
+                value={transactionData.originPaymentDetails.method}
                 onChange={(e) => {
                   setterFunction((prevData: any) => ({
                     ...prevData,
@@ -257,50 +220,14 @@ export default function Page() {
                   }));
                 }}
               >
-                {Object.keys(data.originPaymentDetails).map(
-                  (method: string) => (
-                    <option key={method} value={method}>
-                      {method}
-                    </option>
-                  )
-                )}
+                {value.map((method: string) => (
+                  <option key={method} value={method}>
+                    {method}
+                  </option>
+                ))}
               </Select>
-              {renderInputs(selectedMethodData, currentKey)}
             </FormControl>
           );
-        } else if (currentKey === "destinationPaymentDetails") {
-          const selectedMethod = (data.destinationPaymentDetails as any).method;
-          const selectedMethodData = (data.destinationPaymentDetails as any)[
-            selectedMethod
-          ];
-          return (
-            <FormControl key={currentKey} mt={4} isRequired={isRequired}>
-              <FormLabel>{currentKey}</FormLabel>
-              <Select
-                value={selectedMethod}
-                onChange={(e) => {
-                  setterFunction((prevData: any) => ({
-                    ...prevData,
-                    destinationPaymentDetails: {
-                      ...prevData.destinationPaymentDetails,
-                      method: e.target.value,
-                    },
-                  }));
-                }}
-              >
-                {Object.keys(data.destinationPaymentDetails).map(
-                  (method: string) => (
-                    <option key={method} value={method}>
-                      {method}
-                    </option>
-                  )
-                )}
-              </Select>
-              {renderInputs(selectedMethodData, currentKey)}
-            </FormControl>
-          );
-        } else if (typeof value === "object" && value !== null) {
-          return renderInputs(value, currentKey);
         }
 
         return (
@@ -331,8 +258,7 @@ export default function Page() {
           </FormControl>
         );
       })
-      .flat()
-      .filter((element) => element !== null);
+      .flat();
   };
 
   const FloatingButton = () => (

@@ -7,11 +7,13 @@ import { useResponse } from "@/Context/Response";
 const useTransactionData = () => {
   const { setResponseText } = useResponse();
   const { startLoading, stopLoading } = useLoading();
-  const [transactionData, setTransactionData] = useState<TransactionModel>({
-    transactionId: "7b80a539eea6e78acbd6d458e5971482",
+  const [transactionData, setTransactionData] = useState({
     type: "DEPOSIT",
+    transactionId: "7b80a539eea6e78acbd6d458e5971482",
+    timestamp: 1641654664000,
     originUserId: "8650a2611d0771cba03310f74bf6",
     destinationUserId: "9350a2611e0771cba03310f74bf6",
+    transactionState: "",
     originAmountDetails: {
       country: "DE",
       transactionAmount: 800,
@@ -23,7 +25,6 @@ const useTransactionData = () => {
       transactionCurrency: "INR",
     },
     promotionCodeUsed: true,
-    timestamp: 1641654664000,
     originPaymentDetails: {
       method: "CARD",
       cardFingerprint: "20ac00fed8ef913aefb17cfae1097cce",
