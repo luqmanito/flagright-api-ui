@@ -4,7 +4,7 @@ import transactionNetwork from "@/app/Network/lib/transaction";
 import { useLoading } from "@/Context/loading";
 import { useResponse } from "@/Context/Response";
 
-const useTransactionData = () => {
+const useTransactionDatas = () => {
   const { setResponseText } = useResponse();
   const { startLoading, stopLoading } = useLoading();
   const [transactionData, setTransactionData] = useState({
@@ -14,6 +14,7 @@ const useTransactionData = () => {
     originUserId: "8650a2611d0771cba03310f74bf6",
     destinationUserId: "9350a2611e0771cba03310f74bf6",
     transactionState: "",
+    reference: "loan repayment",
     originAmountDetails: {
       country: "DE",
       transactionAmount: 800,
@@ -39,7 +40,6 @@ const useTransactionData = () => {
       transactionReferenceField: "Deposit",
       _3dsDone: true,
     },
-    reference: "loan repayment",
     originDeviceData: {
       batteryLevel: 95,
       deviceLatitude: 13.0033,
@@ -111,4 +111,4 @@ const useTransactionData = () => {
   };
 };
 
-export default useTransactionData;
+export default useTransactionDatas;
