@@ -3,18 +3,20 @@
 import {
   Box,
   Button,
+  Center,
   Container,
   Flex,
   FormControl,
   FormLabel,
   Heading,
   Input,
+  Select,
   Skeleton,
   useBreakpointValue,
 } from "@chakra-ui/react";
 import useTransactionData from "@/app/Hooks/verifyTransaction";
 import { buttonsData } from "./data";
-import { useState } from "react";
+import { forwardRef, Ref, useEffect, useState } from "react";
 import Title from "@/Components/Title";
 import { useLoading } from "@/Context/loading";
 import { useResponse } from "@/Context/Response";
@@ -26,6 +28,8 @@ import useCreateBusinessUser from "@/app/Hooks/CreateBusinessUser";
 import useRetrieveBusinessUser from "@/app/Hooks/RetrieveBusinessUser";
 import useCreateConsumerUserEvent from "@/app/Hooks/CreateConsumerUserEvent";
 import useCreateBusinessUserEvent from "@/app/Hooks/CreateBusinessUserEvent";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function Page() {
   const { isLoading } = useLoading();
@@ -188,12 +192,49 @@ export default function Page() {
     setTitle(label);
   };
 
+  const [inputValue, setInputValue] = useState("");
+
+  // Load the initial value from localStorage on component mount
+  useEffect(() => {
+    const savedValue = localStorage.getItem("yourLocalStorageKey");
+    if (savedValue) {
+      setInputValue(savedValue);
+    }
+  }, []);
+
+  const handleInputChange = (e: any) => {
+    const newValue = e.target.value;
+    setInputValue(newValue);
+    // Save the new value to localStorage
+    localStorage.setItem("yourLocalStorageKey", newValue);
+  };
+
+  interface ExampleCustomInputProps {
+    value?: any;
+    onClick?: (event: React.MouseEvent<HTMLInputElement, MouseEvent>) => void;
+  }
+
+  const ExampleCustomInput = forwardRef(
+    (
+      { value, onClick }: ExampleCustomInputProps,
+      ref: Ref<HTMLInputElement>
+    ) => (
+      <Input
+        readOnly
+        ref={ref}
+        value={value}
+        className="example-custom-input"
+        onClick={onClick}
+      />
+    )
+  );
+
   const renderInputs: (data: any, parentKey?: string) => JSX.Element[] = (
     data: any,
     parentKey?: string
   ) => {
     return Object.keys(data)
-      .map((key, index) => {
+      .map((key) => {
         const currentKey = parentKey ? `${parentKey}.${key}` : key;
         const value = data[key];
         const isRequired = setterRequired[currentKey];
@@ -205,28 +246,74 @@ export default function Page() {
         return (
           <FormControl key={currentKey} mt={4} isRequired={isRequired}>
             <FormLabel>{currentKey}</FormLabel>
-            <Input
-              value={value}
-              onChange={(e) => {
-                setterFunction((prevData: any) => {
-                  const newData = { ...prevData };
-                  const keys = currentKey.split(".");
-                  let currentObj = newData;
+            {currentKey === "timestamp" || currentKey === "createdTimestamp" ? (
+              <DatePicker
+                customInput={<ExampleCustomInput />}
+                selected={value}
+                onChange={(e) => {
+                  setterFunction((prevData: any) => {
+                    const newData = { ...prevData };
+                    const keys = currentKey.split(".");
+                    let currentObj = newData;
 
-                  keys.forEach((k, index) => {
-                    if (index === keys.length - 1) {
-                      currentObj[k] = e.target.value;
-                    } else {
-                      currentObj[k] = { ...(currentObj[k] || {}) };
-                      currentObj = currentObj[k];
-                    }
+                    keys.forEach((k: string | number, index: number) => {
+                      if (index === keys.length - 1) {
+                        currentObj[k] = e?.getTime();
+                      } else {
+                        currentObj[k] = { ...(currentObj[k] || {}) };
+                        currentObj = currentObj[k];
+                      }
+                    });
+                    return newData;
                   });
+                }}
+              />
+            ) : currentKey === "executedRules.0.ruleHit" ? (
+              <Select
+                onChange={(e) => {
+                  setterFunction((prevData: any) => {
+                    const newData = { ...prevData };
+                    const keys = currentKey.split(".");
+                    let currentObj = newData;
 
-                  return newData;
-                });
-              }}
-              placeholder={currentKey}
-            />
+                    keys.forEach((k, index) => {
+                      if (index === keys.length - 1) {
+                        currentObj[k] =
+                          e.target.value === "true" ? true : false;
+                      } else {
+                        currentObj[k] = { ...(currentObj[k] || {}) };
+                        currentObj = currentObj[k];
+                      }
+                    });
+                    return newData;
+                  });
+                }}
+              >
+                <option value={"true"}>True</option>
+                <option value={"false"}>False</option>
+              </Select>
+            ) : (
+              <Input
+                value={value}
+                onChange={(e) => {
+                  setterFunction((prevData: any) => {
+                    const newData = { ...prevData };
+                    const keys = currentKey.split(".");
+                    let currentObj = newData;
+                    keys.forEach((k, index) => {
+                      if (index === keys.length - 1) {
+                        currentObj[k] = e.target.value;
+                      } else {
+                        currentObj[k] = { ...(currentObj[k] || {}) };
+                        currentObj = currentObj[k];
+                      }
+                    });
+                    return newData;
+                  });
+                }}
+                placeholder={currentKey}
+              />
+            )}
           </FormControl>
         );
       })
@@ -295,13 +382,16 @@ export default function Page() {
             ))}
           </Container>
           <Container
-            centerContent
             w={{ base: "100%", md: "45%" }}
             bg={"blue.200"}
             pb={8}
             borderRadius={10}
           >
-            <Heading pt={4}>{title}</Heading>
+            <Center>
+              <Heading pt={4}>{title}</Heading>
+            </Center>
+            <FormLabel>Key</FormLabel>
+            <Input value={inputValue} onChange={handleInputChange} />
             {changeDataApi()}
           </Container>
           <Container

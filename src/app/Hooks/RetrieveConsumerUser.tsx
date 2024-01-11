@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import transactionNetwork from "@/app/Network/lib/transaction";
 import { useLoading } from "@/Context/loading";
 import { useResponse } from "@/Context/Response";
@@ -6,14 +6,21 @@ import { useResponse } from "@/Context/Response";
 const useRetrieveConsumerUser = () => {
   const { setResponseText } = useResponse();
   const { startLoading, stopLoading } = useLoading();
-  const [userId, setUserId] = useState<{ userId: string }>({
+  const [userId, setUserId] = useState<{
+    userId: string;
+    createdTimestamp: number;
+  }>({
     userId: "96647cfd9e8fe66ee0f3362e011e34e8",
+    createdTimestamp: 1262300400000,
   });
 
   const confirmRetrieveConsumer = async () => {
     startLoading();
     try {
-      const response = await transactionNetwork.getConsumerUser(userId.userId);
+      const response = await transactionNetwork.getConsumerUser(
+        userId.userId,
+        userId
+      );
       const formattedResponse = JSON.stringify(response.data, null, 2);
       setResponseText(formattedResponse);
       return response;
