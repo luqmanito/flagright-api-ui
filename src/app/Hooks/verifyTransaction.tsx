@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { TransactionModel } from "@/app/Models/VerifyTransactionModel";
+import {
+  MpesaModel,
+  TransactionModel,
+} from "@/app/Models/VerifyTransactionModel";
 import transactionNetwork from "@/app/Network/lib/transaction";
 import { useLoading } from "@/Context/loading";
 import { useResponse } from "@/Context/Response";
@@ -11,12 +14,33 @@ const useTransactionData = () => {
     transactionId: "7b80a539eea6e78acbd6d458e5971482",
     type: "DEPOSIT",
     timestamp: 1641654664000,
+    originPaymentDetails: {
+      method: "CARD",
+    },
   });
+  const [mpesa, setMpesa] = useState(false);
+  const [mpesaData, setMpesaData] = useState<MpesaModel>({
+    businessShortCode: "string",
+    transactionType: "CustomerPayBillOnline",
+    phoneNumber: "string",
+  });
+
+  const combinedData = {
+    ...transactionData,
+    originPaymentDetails: {
+      ...transactionData.originPaymentDetails,
+      businessShortCode: mpesaData.businessShortCode,
+      transactionType: mpesaData.transactionType,
+      phoneNumber: mpesaData.phoneNumber,
+    },
+  };
 
   const confirmOrder = async () => {
     startLoading();
     try {
-      const response = await transactionNetwork.create(transactionData);
+      const response = await transactionNetwork.create(
+        mpesa ? combinedData : transactionData
+      );
       const formattedResponse = JSON.stringify(response.data, null, 2);
       setResponseText(formattedResponse);
       return response;
@@ -47,6 +71,10 @@ const useTransactionData = () => {
     confirmOrder,
     requiredFields,
     setTransactionData,
+    mpesaData,
+    setMpesa,
+    mpesa,
+    setMpesaData,
   };
 };
 
