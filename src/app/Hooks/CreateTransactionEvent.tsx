@@ -10,15 +10,6 @@ const useTransactionEvent = () => {
     timestamp: 1431231244001,
     transactionId: "7b80a539eea6e78acbd6d458e5971482",
     transactionState: "SUCCESSFUL",
-    eventId: "aaeeb166147a406b957dd9147a406b957",
-    eventDescription: "Transaction created",
-    metaData: {
-      batteryLevel: 76.3,
-      deviceLatitude: 13.009711,
-      deviceLongitude: 76.102898,
-      ipAddress: "79.144.2.20",
-      vpnUsed: true,
-    },
   });
 
   const confirmTransactionEvent = async () => {
