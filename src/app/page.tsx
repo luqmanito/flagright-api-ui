@@ -34,11 +34,14 @@ import "react-datepicker/dist/react-datepicker.css";
 export default function Page() {
   const { isLoading } = useLoading();
   const { responseText, setResponseText } = useResponse();
-  // const [mpesa, setMpesa] = useState(false);
-  const [upi, setUpi] = useState(false);
+
   const {
     transactionData,
     setMpesaData,
+    setMpesaDestination,
+    mpesaDestination,
+    mpesaDataDestination,
+    setMpesaDataDestination,
     setMpesa,
     mpesa,
     confirmOrder,
@@ -359,11 +362,56 @@ export default function Page() {
 
                     return newData;
                   });
+                  e.target.value === "MPESA" ? setMpesa(true) : setMpesa(false);
+                }}
+              >
+                <option value={"CARD"}>CARD</option>
+                <option value={"GENERIC_BANK_ACCOUNT"}>
+                  GENERIC_BANK_ACCOUNT
+                </option>
+                <option value={"IBAN"}>IBAN</option>
+                <option value={"ACH"}>ACH</option>
+                <option value={"UPI"}>UPI</option>
+                <option value={"WALLET"}>WALLET</option>
+                <option value={"SWIFT"}>SWIFT</option>
+                <option value={"MPESA"}>MPESA</option>
+                <option value={"CHECK"}>CHECK</option>
+              </Select>
+            ) : currentKey === "destinationPaymentDetails.method" ? (
+              <Select
+                onChange={(e) => {
+                  setterFunction((prevData: any) => {
+                    const newData = { ...prevData };
+                    const keys = currentKey.split(".");
+                    let currentObj = newData;
+
+                    keys.forEach((k, index) => {
+                      if (index === keys.length - 1) {
+                        currentObj[k] = e.target.value;
+                      } else {
+                        currentObj[k] = { ...(currentObj[k] || {}) };
+                        currentObj = currentObj[k];
+                      }
+                    });
+
+                    if (e.target.value === "UPI") {
+                      currentObj["upiID"] = "string"; // Replace "additionalKey" and "someValue" with your desired key-value pair
+                    } else {
+                      // If the selected value is not "UPI", remove the additional key
+                      delete currentObj["upiID"];
+                    }
+                    if (e.target.value === "WALLET") {
+                      currentObj["walletType"] = "string"; // Replace "additionalKey" and "someValue" with your desired key-value pair
+                    } else {
+                      // If the selected value is not "UPI", remove the additional key
+                      delete currentObj["walletType"];
+                    }
+
+                    return newData;
+                  });
                   e.target.value === "MPESA"
-                    ? (setMpesa(true), setUpi(false))
-                    : e.target.value === "UPI"
-                    ? (setUpi(true), setMpesa(false))
-                    : setMpesa(false);
+                    ? setMpesaDestination(true)
+                    : setMpesaDestination(false);
                 }}
               >
                 <option value={"CARD"}>CARD</option>
@@ -408,6 +456,12 @@ export default function Page() {
 
   const handleMpesaDataChange = (key: string, value: string) => {
     setMpesaData((prevData) => ({
+      ...prevData,
+      [key]: value,
+    }));
+  };
+  const handleMpesaDestinationChange = (key: string, value: string) => {
+    setMpesaDataDestination((prevData) => ({
       ...prevData,
       [key]: value,
     }));
@@ -488,14 +542,14 @@ export default function Page() {
             {changeDataApi()}
             {mpesa ? (
               <>
-                <FormLabel mt={4}>businessShortCode</FormLabel>
+                <FormLabel mt={4}>Origin businessShortCode</FormLabel>
                 <Input
                   value={mpesaData.businessShortCode}
                   onChange={(e) =>
                     handleMpesaDataChange("businessShortCode", e.target.value)
                   }
                 />
-                <FormLabel>transactionType</FormLabel>
+                <FormLabel>Origin transactionType</FormLabel>
                 <Select
                   value={mpesaData.transactionType}
                   onChange={(e) =>
@@ -518,7 +572,7 @@ export default function Page() {
                     CustomerPayBillOnline
                   </option>
                 </Select>
-                <FormLabel>phoneNumber</FormLabel>
+                <FormLabel>Origin phoneNumber</FormLabel>
                 <Input
                   value={mpesaData.phoneNumber}
                   onChange={(e) =>
@@ -527,12 +581,48 @@ export default function Page() {
                 />
               </>
             ) : null}
-            {/* {upi ? (
+            {mpesaDestination ? (
               <>
-                <FormLabel mt={4}>UpiId</FormLabel>
-                <Input value={"string"} onChange={handleInputChange} />
+                <FormLabel mt={4}>Destination businessShortCode</FormLabel>
+                <Input
+                  value={mpesaDataDestination.businessShortCode}
+                  onChange={(e) =>
+                    handleMpesaDestinationChange("businessShortCode", e.target.value)
+                  }
+                />
+                <FormLabel>Destination transactionType</FormLabel>
+                <Select
+                  value={mpesaDataDestination.transactionType}
+                  onChange={(e) =>
+                    handleMpesaDestinationChange("transactionType", e.target.value)
+                  }
+                >
+                  <option value={"CustomerPayBillOnline"}>
+                    CustomerPayBillOnline
+                  </option>
+                  <option value={"CustomerBuyGoodsOnline"}>
+                    CustomerBuyGoodsOnline
+                  </option>
+                  <option value={"SalaryPayment"}>SalaryPayment</option>
+                  <option value={"CustomerBuyGoodsOnline"}>
+                    CustomerBuyGoodsOnline
+                  </option>
+                  <option value={"PromotionPayment"}>PromotionPayment</option>
+                  <option value={"BusinessPayment"}>BusinessPayment</option>
+                  <option value={"CustomerPayBillOnline"}>
+                    CustomerPayBillOnline
+                  </option>
+                </Select>
+                <FormLabel>Destination phoneNumber</FormLabel>
+                <Input
+                  value={mpesaDataDestination.phoneNumber}
+                  onChange={(e) =>
+                    handleMpesaDestinationChange("phoneNumber", e.target.value)
+                  }
+                />
               </>
-            ) : null} */}
+            ) : null}
+          
           </Container>
           <Container
             centerContent
