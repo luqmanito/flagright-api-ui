@@ -17,9 +17,18 @@ const useTransactionData = () => {
     originPaymentDetails: {
       method: "CARD",
     },
+    destinationPaymentDetails: {
+      method: "CARD",
+    },
   });
   const [mpesa, setMpesa] = useState(false);
+  const [mpesaDestination, setMpesaDestination] = useState(false);
   const [mpesaData, setMpesaData] = useState<MpesaModel>({
+    businessShortCode: "string",
+    transactionType: "CustomerPayBillOnline",
+    phoneNumber: "string",
+  });
+  const [mpesaDataDestination, setMpesaDataDestination] = useState<MpesaModel>({
     businessShortCode: "string",
     transactionType: "CustomerPayBillOnline",
     phoneNumber: "string",
@@ -32,6 +41,12 @@ const useTransactionData = () => {
       businessShortCode: mpesaData.businessShortCode,
       transactionType: mpesaData.transactionType,
       phoneNumber: mpesaData.phoneNumber,
+    },
+    destinationPaymentDetails: {
+      ...transactionData.originPaymentDetails,
+      businessShortCode: mpesaDataDestination.businessShortCode,
+      transactionType: mpesaDataDestination.transactionType,
+      phoneNumber: mpesaDataDestination.phoneNumber,
     },
   };
 
@@ -69,10 +84,14 @@ const useTransactionData = () => {
   return {
     transactionData,
     confirmOrder,
+    mpesaDestination,
+    setMpesaDestination,
     requiredFields,
     setTransactionData,
     mpesaData,
     setMpesa,
+    mpesaDataDestination,
+    setMpesaDataDestination,
     mpesa,
     setMpesaData,
   };

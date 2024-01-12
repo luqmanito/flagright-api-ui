@@ -9,6 +9,7 @@ const useCreateBusinessUserEvent = () => {
   const [businessUserEvent, setBusinessUserEvent] = useState<{}>({
     timestamp: 1262300400000,
     userId: "string",
+    
   });
 
   const confirmCreateBusinessUserEvent = async () => {
