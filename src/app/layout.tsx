@@ -3,6 +3,15 @@ import { LoadingProvider } from "@/Context/loading";
 import { ResponseProvider } from "@/Context/Response";
 import { Providers } from "@/app/Providers";
 
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    template: "Flagright API",
+    default: "Flagright API",
+  },
+};
+
 export default function RootLayout({
   children,
 }: {
